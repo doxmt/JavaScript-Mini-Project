@@ -27,7 +27,11 @@ function getTime(){
   minute = minute < 10 ? `0${minute}` : minute
   second = second < 10 ? `0${second}` : second
 
-
+  if (parseInt(minute) >= 59) {
+    timeDiv.style.color = "red";
+  } else {
+    timeDiv.style.color = "white";
+  }
 
   todayDiv.textContent = `${year}년 ${month}월 ${date}일`
   if(showMili){
