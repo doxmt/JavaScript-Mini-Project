@@ -20,8 +20,9 @@ body{ margin: 0;}
   border: 1px solid black;
   border-radius: 10px;
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
+  
 }
 .eachnum{
   font-size: 0.75em;
@@ -32,6 +33,7 @@ body{ margin: 0;}
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 0px 5px;
 }
 button{
   font-size: 0.5em;

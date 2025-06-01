@@ -1,5 +1,6 @@
 const numbersDiv = document.querySelector(".numbers")
-const drawButton = document.querySelector("#draw")
+const alldrawButton = document.querySelector("#alldraw")
+const onedrawButton = document.querySelector("#onedraw")
 const resetButton = document.querySelector("#reset")
 
 const lottoNumbers = []
@@ -13,7 +14,7 @@ function paintNumber(number){
   eachNumDiv.textContent = number // textcontent 설정
   numbersDiv.appendChild(eachNumDiv) // eachnumdiv를 numberdiv의 자식으로
 }
-drawButton.addEventListener('click', function(){
+alldrawButton.addEventListener('click', function(){
   while(lottoNumbers.length < 6){
     let ran = Math.floor(Math.random() * 45) + 1
     if(lottoNumbers.indexOf(ran) === -1){ //중복 방지
@@ -24,6 +25,16 @@ drawButton.addEventListener('click', function(){
   console.log(lottoNumbers)
 })
 
+onedrawButton.addEventListener('click', function(){
+  if(lottoNumbers.length < 6){
+    let ran = Math.floor(Math.random() * 45) + 1
+    if(lottoNumbers.indexOf(ran) === -1){ //중복 방지
+      lottoNumbers.push(ran)
+      paintNumber(ran)  
+    }
+  }
+  console.log(lottoNumbers)
+})
 resetButton.addEventListener('click', function(){
   lottoNumbers.splice(0,6) // 0번부터 6번 인덱스를 지움
   numbersDiv.innerHTML = "" //numbersdiv안에 있는 html코드를 없앰
