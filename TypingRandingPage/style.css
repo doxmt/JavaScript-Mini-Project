@@ -1,0 +1,59 @@
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body{
+  background-color: darkslateblue;
+}
+
+.wrap{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  text-align: center;
+}
+
+.material-symbols-outlined {
+  font-size: 10rem; 
+  font-variation-settings:
+    'FILL' 0,       
+    'wght' 400,      
+    'GRAD' 0,        
+    'opsz' 48;       /* optical size: 이걸 키워야 실제로 커짐 */
+}
+
+.lg-text{
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+.sm-tet{
+  font-size: 1.5rem;
+}
+
+#dynamic{
+  position: relative;
+  display: inline-block;
+}
+#dynamic::after{
+  content:" ";
+  display: block;
+  position: absolute;
+  top: 0;
+  right: -10px;
+  width: 4px;
+  height: 100%;
+  background-color: white;
+}
+
+#dynamic.active::after{
+  display: none;
+}
+
+
+
+
