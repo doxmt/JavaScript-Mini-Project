@@ -32,21 +32,33 @@ body{
 }
 
 
-.cube1 {
-  transform: translateZ(135px);
+.face {
+  transform-style: preserve-3d; /* 3D 회전을 원한다면 */
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  width: 270px;
+  height: 270px;
+  position: absolute;
+  gap: 0;
 }
-.cube2 {
-  transform: rotateX(90deg) translateZ(135px);
+
+.face > div {
+  width: 90px;
+  height: 90px;
+  border: 2px solid black;
+  box-sizing: border-box;
 }
-.cube3 {
-  transform: rotateX(180deg) translateZ(135px);
+
+.face > div > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
-.cube4 {
-  transform: rotateX(270deg) translateZ(135px);
-}
-.cube5 {
-  transform: rotateY(90deg) translateZ(135px);
-}
-.cube6 {
-  transform: rotateY(270deg) translateZ(135px);
-}
+.cube1 { transform: translateZ(135px); }
+.cube2 { transform: rotateX(90deg) translateZ(135px); }
+.cube3 { transform: rotateX(180deg) translateZ(135px); }
+.cube4 { transform: rotateX(270deg) translateZ(135px); }
+.cube5 { transform: rotateY(90deg) translateZ(135px); }
+.cube6 { transform: rotateY(270deg) translateZ(135px); }
+
