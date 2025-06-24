@@ -48,17 +48,51 @@ body{
   height: 90px;
   border: 2px solid black;
   box-sizing: border-box;
+  pointer-events: auto;
 }
+
 
 .face > div > img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
+
+
 .cube1 { transform: translateZ(135px); }
 .cube2 { transform: rotateX(90deg) translateZ(135px); }
 .cube3 { transform: rotateX(180deg) translateZ(135px); }
 .cube4 { transform: rotateX(270deg) translateZ(135px); }
 .cube5 { transform: rotateY(90deg) translateZ(135px); }
 .cube6 { transform: rotateY(270deg) translateZ(135px); }
+
+.arrow {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  font-size: 10px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 0;
+  line-height: 14px;
+  pointer-events: auto;
+  z-index: 5;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.arrow.up    { top: 4px;  left: 50%; transform: translateX(-50%); }
+.arrow.down  { bottom: 4px; left: 50%; transform: translateX(-50%); }
+.arrow.left  { left: 4px;  top: 50%; transform: translateY(-50%); }
+.arrow.right { right: 4px; top: 50%; transform: translateY(-50%); }
+
+.face > div {
+  position: relative;
+  overflow: hidden;
+}
+
+.face > div:hover .arrow {
+  opacity: 1;
+}
 
