@@ -21,3 +21,28 @@ document.querySelectorAll('.face > div').forEach(tile => {
 
   tile.appendChild(arrowsContainer);
 });
+
+let rotateX = -25; 
+let rotateY = 45; 
+
+const cube = document.querySelector('.cube');
+const buttons = document.querySelectorAll('.controls > button');
+
+buttons.forEach(button => {
+  button.addEventListener('click', function () {
+    const className = this.className;
+
+    if (className.includes('up')) {
+      rotateX += 90;
+    } else if (className.includes('down')) {
+      rotateX -= 90;
+    } else if (className.includes('left')) {
+      rotateY -= 90; 
+    } else if (className.includes('right')) {
+      rotateY += 90; 
+    }
+
+    cube.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+  });
+});
+
