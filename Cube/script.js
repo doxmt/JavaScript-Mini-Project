@@ -10,7 +10,6 @@ document.querySelectorAll('.face > div').forEach(tile => {
     btn.classList.add('arrow', dir);
     btn.innerText = symbols[dir];
 
-    // 클릭 이벤트 예시
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       alert(`방향: ${dir}, 타일 클래스: ${tile.className}`);
