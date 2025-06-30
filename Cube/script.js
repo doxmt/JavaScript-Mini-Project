@@ -2,9 +2,9 @@ let cubeState = {
   front:  Array(9).fill("red"),     // 오른쪽이 정면
   left:   Array(9).fill("white"),   // 화면 왼쪽
   top:    Array(9).fill("blue"),    // 화면 위
-  right:  Array(9).fill("yellow"),  // 보이지 않음
-  back:   Array(9).fill("green"),   // 보이지 않음
-  bottom: Array(9).fill("orange"),  // 아래
+  right:  Array(9).fill("yellow"),  // 보이지 않음 red 오른쪽편에있음
+  back:   Array(9).fill("green"),   // 보이지 않음 red의 반대편
+  bottom: Array(9).fill("orange"),  // 보이지 않음 아래에있음
 };
 
 
@@ -54,17 +54,38 @@ function rotateRowRight(row) {
 
   // left → front
   idxs.forEach((i, j) => cubeState.front[i] = leftRow[j]);
-
   // front → right
   idxs.forEach((i, j) => cubeState.right[i] = frontRow[j]);
-
-  // right → back (역순으로 → 항상 [0,1,2], [3,4,5], [6,7,8] 기준으로)
+  // right → back (역순)
   idxs.forEach((_, j) => cubeState.back[idxs[j]] = rightRow[2 - j]);
-
-  // back → left (역순으로)
+  // back → left (역순)
   idxs.forEach((_, j) => cubeState.left[idxs[j]] = backRow[2 - j]);
 
-  // 회전면 회전 (위줄일 경우 top, 아래줄일 경우 bottom)
+  // ✔ 올바른 면 회전
+  if (row === 0) rotateFaceCounterClockwise("top");
+  if (row === 2) rotateFaceClockwise("bottom");
+
+  updateDOM();
+}
+
+function rotateRowLeft(row) {
+  const idxs = rowIndices[row];
+
+  const frontRow = idxs.map(i => cubeState.front[i]);
+  const leftRow  = idxs.map(i => cubeState.left[i]);
+  const backRow  = idxs.map(i => cubeState.back[i]);
+  const rightRow = idxs.map(i => cubeState.right[i]);
+
+  // right → front
+  idxs.forEach((i, j) => cubeState.front[i] = rightRow[j]);
+  // front → left
+  idxs.forEach((i, j) => cubeState.left[i] = frontRow[j]);
+  // left → back (역순)
+  idxs.forEach((_, j) => cubeState.back[idxs[j]] = leftRow[2 - j]);
+  // back → right (역순)
+  idxs.forEach((_, j) => cubeState.right[idxs[j]] = backRow[2 - j]);
+
+  // ✔ 올바른 면 회전
   if (row === 0) rotateFaceClockwise("top");
   if (row === 2) rotateFaceCounterClockwise("bottom");
 
@@ -84,35 +105,6 @@ function rotateFaceCounterClockwise(face) {
   const map = [2,5,8,1,4,7,0,3,6]; // 반시계 방향 회전
   cubeState[face] = map.map(i => old[i]);
 }
-
-// 행 왼쪽 회전
-function rotateRowLeft(row) {
-  const idxs = rowIndices[row];
-
-  const frontRow = idxs.map(i => cubeState.front[i]);
-  const leftRow  = idxs.map(i => cubeState.left[i]);
-  const backRow  = idxs.map(i => cubeState.back[i]);
-  const rightRow = idxs.map(i => cubeState.right[i]);
-
-  // right → front
-  idxs.forEach((i, j) => cubeState.front[i] = rightRow[j]);
-
-  // front → left
-  idxs.forEach((i, j) => cubeState.left[i] = frontRow[j]);
-
-  // left → back (역순)
-  idxs.forEach((_, j) => cubeState.back[idxs[j]] = leftRow[2 - j]);
-
-  // back → right (역순)
-  idxs.forEach((_, j) => cubeState.right[idxs[j]] = backRow[2 - j]);
-
-  // 회전면 회전
-  if (row === 0) rotateFaceCounterClockwise("top");
-  if (row === 2) rotateFaceClockwise("bottom");
-
-  updateDOM();
-}
-
 
 
 // 6. DOM에 cubeState 반영
@@ -152,33 +144,14 @@ document.querySelectorAll('.face > div').forEach(tile => {
     // ✔ 클릭 이벤트 여기서 바로 연결
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
-
+    
       const tile = btn.closest('[data-face][data-index]');
       const face = tile.dataset.face;
       const index = Number(tile.dataset.index);
-      const row = getRow(index);
-
-      console.log(`[✔ 클릭됨] 방향: ${dir}, face: ${face}, row: ${row}`);
-
-      // 일단 front 면에서만 작동
-      if (face === "front") {
-        const row = getRow(index);
-        const col = index % 3;
-      
-        if (dir === "up") {
-          rotateColumnUp(col);
-        } else if (dir === "down") {
-          rotateColumnDown(col);
-        } else if (dir === "left") {
-          rotateRowLeft(row);
-        } else if (dir === "right") {
-          rotateRowRight(row);
-        }
-      }
-      
-
-      
+    
+      handleArrowClick(face, index, dir); // ✅ 여기만 바꿈
     });
+    
 
     arrowsContainer.appendChild(btn);
   });
@@ -198,9 +171,9 @@ buttons.forEach(button => {
     const className = this.className;
 
     if (className.includes('up')) {
-      rotateX += 90;
+      rotateX += 180;
     } else if (className.includes('down')) {
-      rotateX -= 90;
+      rotateX -= 180;
     } else if (className.includes('left')) {
       rotateY -= 90;
     } else if (className.includes('right')) {
@@ -270,3 +243,67 @@ function rotateColumnDown(col) {
 
   updateDOM();
 }
+
+function handleArrowClick(face, index, dir) {
+  let row = Math.floor(index / 3);
+  let col = index % 3;
+
+  // 왼쪽 면만 세로가 index / 3 아님 → 행, 열 바뀜처럼 생각해야 함
+  if (face === "left" || face === "right") {
+    row = index % 3;
+    col = Math.floor(index / 3);
+  }
+
+  switch (face) {
+    case "front":
+      if (dir === "up") rotateColumnUp(col);
+      else if (dir === "down") rotateColumnDown(col);
+      else if (dir === "left") rotateRowLeft(row);
+      else if (dir === "right") rotateRowRight(row);
+      break;
+
+  }
+
+  updateDOM();
+}
+
+function rotateLeftFaceColumnUp(col) {
+  const idxs = colIndices[col];
+
+  const topCol = idxs.map(i => cubeState.top[i]);
+  const frontCol = idxs.map(i => cubeState.front[i]);
+  const bottomCol = idxs.map(i => cubeState.bottom[i]);
+  const backCol = idxs.map(i => cubeState.back[i]);
+  const leftCol = idxs.map(i => cubeState.left[i]);
+
+  // back → top (역순)
+  idxs.forEach((_, j) => cubeState.top[idxs[j]] = backCol[2 - j]);
+  // top → front
+  idxs.forEach((i, j) => cubeState.front[i] = topCol[j]);
+  // front → bottom
+  idxs.forEach((i, j) => cubeState.bottom[i] = frontCol[j]);
+  // bottom → back (역순)
+  idxs.forEach((_, j) => cubeState.back[idxs[j]] = bottomCol[2 - j]);
+  // left → left (회전으로 처리)
+  rotateFaceCounterClockwise("left");
+
+  updateDOM();
+}
+
+
+
+function shuffleCube(times = 20) {
+  const directions = ["up", "down", "left", "right"];
+  const faces = ["front", "left", "top"];
+
+  for (let i = 0; i < times; i++) {
+    const face = faces[Math.floor(Math.random() * faces.length)];
+    const index = Math.floor(Math.random() * 9);
+    const dir = directions[Math.floor(Math.random() * directions.length)];
+    handleArrowClick(face, index, dir);
+  }
+}
+
+document.querySelector(".shuffle-btn").addEventListener("click", () => {
+  shuffleCube(30); // 30번 섞기
+});
